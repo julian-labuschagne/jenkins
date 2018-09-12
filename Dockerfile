@@ -1,14 +1,20 @@
-FROM jenkinsci/jenkins:latest
-
+FROM jenkinsci/jenkins:lts
 ENV REFRESHED_AT 2018-09-12
  
 USER root
-RUN apt-get update -qq 
-RUN apt-get install -qqy apt-transport-https ca-certificates
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-RUN echo deb https://apt.dockerproject.org/repo debian-jessie main > /etc/apt/sources.list.d/docker.list
-RUN apt-get update -qq
-RUN apt-get install -qqy docker-engine
+RUN apt-get update -qq && \
+    apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+
+RUN add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) \
+    stable"
+
+RUN apt-get update -qq && \
+    apt-get install -qqy docker-ce=17.12.1~ce-0~debian -y
+
 RUN usermod -a -G docker jenkins
  
 USER jenkins
