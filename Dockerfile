@@ -1,4 +1,6 @@
-from jenkinsci/jenkins:latest
+FROM jenkinsci/jenkins:latest
+
+ENV REFRESHED_AT 2018-09-12
  
 USER root
 RUN apt-get update -qq 
